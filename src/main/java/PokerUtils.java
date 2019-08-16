@@ -29,22 +29,21 @@ public class PokerUtils {
         Map<Integer, Integer> pokerIntegerMap1 = calculatePokerNum(pokers1);
         Map<Integer, Integer> pokerIntegerMap2 = calculatePokerNum(pokers2);
 
-        List<Poker> biggerPokers = new ArrayList<>();
 
         int index = 0;
         for (Map.Entry<Integer, Integer> entity1 : pokerIntegerMap1.entrySet()) {
             index++;
             for (Map.Entry<Integer, Integer> entity2 : pokerIntegerMap2.entrySet()) {
                 if (entity1.getValue() > entity2.getValue()) {
-                    biggerPokers = pokers1;
+                    return buildCard(pokers1);
                 } else if (entity1.getValue() < entity2.getValue()) {
-                    biggerPokers = pokers2;
+                    return buildCard(pokers2);
                 } else {
                     int result = pokerComparator.compare(entity1.getKey(), entity2.getKey());
                     if (result < 0) {
-                        biggerPokers = pokers1;
+                        return buildCard(pokers1);
                     } else if (result > 0) {
-                        biggerPokers = pokers2;
+                        return buildCard(pokers2);
                     } else if (index == pokers1.size()) {
                         return "draw";
                     }
@@ -52,8 +51,7 @@ public class PokerUtils {
                 break;
             }
         }
-
-        return buildCard(biggerPokers);
+        return null;
     }
 
     private int getNumsIndex(char ch) {
@@ -89,7 +87,15 @@ public class PokerUtils {
 
         List<Map.Entry<Integer, Integer>> list = new ArrayList<>(pokerIntegerMap.entrySet());
 
-        list.sort((o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        list.sort((o1, o2) -> {
+            if (o2.getValue().compareTo(o1.getValue()) > 0) {
+                return 1;
+            } else if (o2.getValue().compareTo(o1.getValue()) < 0) {
+                return -1;
+            } else {
+                return o2.getKey().compareTo(o1.getKey());
+            }
+        });
 
         Iterator<Map.Entry<Integer, Integer>> iterator = list.iterator();
         Map.Entry<Integer, Integer> tmpEntry = null;
