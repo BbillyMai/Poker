@@ -70,4 +70,17 @@ public class PokerTest {
 
         assertEquals("AH TH", result);
     }
+
+    @Test
+    public void should_4H5HTH8C9C_is_bigger_given_4H5HTH8C9C_And_4H5HTH8CAC() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "4H 5H TH 8C AC";
+        String card2 = "4H 5H TH 8C 9C";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("AC TH 8C 5H 4H", result);
+    }
 }

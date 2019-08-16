@@ -19,34 +19,26 @@ public class PokerUtils {
             poker.setType(split[i].charAt(1));
             pokers.add(poker);
         });
-        Collections.sort(pokers, pokerComparator);
+        pokers.sort(pokerComparator);
         return pokers;
     }
 
 
     public String comparedCard(List<Poker> pokers1, List<Poker> pokers2) {
-        StringBuilder stringBuffer = new StringBuilder();
-        int max = 1;
+
+        List<Poker> biggerPokers = new ArrayList<>();
         for (int i = 0; i < pokers1.size(); i++) {
             int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
             if (result < 0) {
+                biggerPokers = pokers1;
                 break;
             }
             if (result > 0) {
-                max = 2;
+                biggerPokers = pokers2;
                 break;
             }
         }
-        if (max == 1) {
-            for (Poker aPokers1 : pokers1) {
-                stringBuffer.append(aPokers1.getCard()).append(" ");
-            }
-        } else {
-            for (Poker aPokers2 : pokers2) {
-                stringBuffer.append(aPokers2.getCard()).append(" ");
-            }
-        }
-        return stringBuffer.substring(0, stringBuffer.length() - 1);
+        return buildCard(biggerPokers);
     }
 
     private int getNumsIndex(char ch) {
@@ -56,5 +48,13 @@ public class PokerUtils {
             }
         }
         return -1;
+    }
+
+    private String buildCard(List<Poker> pokers) {
+        StringBuilder stringBuffer = new StringBuilder();
+        for (Poker aPoker : pokers) {
+            stringBuffer.append(aPoker.getCard()).append(" ");
+        }
+        return stringBuffer.substring(0, stringBuffer.length() - 1);
     }
 }
