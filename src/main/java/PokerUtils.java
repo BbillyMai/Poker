@@ -9,11 +9,12 @@ public class PokerUtils {
     private final int Single = 1;
     private final int OnePair = 2;
     private final int TwoPair = 3;
-    private final int Straight = 4;
-    private final int Flush = 5;
-    private final int Hulu = 6;
-    private final int FourCards = 7;
-    private final int StraightFlush = 8;
+    private final int ThreeCards = 4;
+    private final int Straight = 5;
+    private final int Flush = 6;
+    private final int Hulu = 7;
+    private final int FourCards = 8;
+    private final int StraightFlush = 9;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -54,6 +55,8 @@ public class PokerUtils {
                 return comparedHule(pokers1, pokers2);
             } else if (pokersLevel1 == FourCards && pokersLevel2 == FourCards) {
                 return comparedFourCards(pokers1, pokers2);
+            } else if (pokersLevel1 == ThreeCards && pokersLevel2 == ThreeCards) {
+                return comparedHule(pokers1, pokers2);
             } else {
                 for (int i = 0; i < pokers1.size(); i++) {
                     int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
@@ -163,8 +166,13 @@ public class PokerUtils {
         if (isFlush(pokers)) {
             return Flush;
         }
+
         if (isStraight(pokers)) {
             return Straight;
+        }
+
+        if (isThreeCard(pokers)) {
+            return ThreeCards;
         }
 
         for (Poker poker : pokers) {
@@ -226,6 +234,19 @@ public class PokerUtils {
             }
         }
         return sum == 4;
+    }
+
+    private boolean isThreeCard(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+
+        if (map.size() == 3) {
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == 3) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private Map<Integer, Integer> statisticsPoker(List<Poker> pokers) {

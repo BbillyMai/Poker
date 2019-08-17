@@ -137,6 +137,32 @@ public class PokerTest {
     }
 
     @Test
+    public void should_5D_5C_5H_8C_2D_is_bigger_given_4H_4S_TH_TC_AD_And_5D_5C_5H_8C_2D() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "4H 4S TH TC AD";
+        String card2 = "5D 5C 5H 8C 2D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("8C 5D 5C 5H 2D", result);
+    }
+
+    @Test
+    public void should_5D_5C_5H_8C_2D_is_bigger_given_4H_4S_4H_TC_AD_And_5D_5C_5H_8C_2D() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "4H 4S 4H TC AD";
+        String card2 = "5D 5C 5H 8C 2D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("8C 5D 5C 5H 2D", result);
+    }
+
+    @Test
     public void should_3D_4C_5H_6C_7D_is_bigger_given_3D_4C_5H_6C_7D_And_5D_5C_TH_8C_8D() {
         PokerUtils pokerUtils = new PokerUtils();
         String card1 = "3D 4C 5H 6C 7D";
