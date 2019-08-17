@@ -44,18 +44,14 @@ public class PokerUtils {
         } else if (pokersLevel1 < pokersLevel2) {
             bestPokers = pokers2;
         } else {
-            if (pokersLevel1 == 5 && pokersLevel2 == 5) {
+            if (pokersLevel1 == Flush && pokersLevel2 == Flush) {
                 char pokersType1 = pokers1.get(0).getType();
                 int index1 = getTypesIndex(pokersType1);
                 char pokersType2 = pokers2.get(0).getType();
                 int index2 = getTypesIndex(pokersType2);
-                if (index1 > index2) {
-                    return buildCard(pokers1);
-                } else if (index1 < index2) {
-                    return buildCard(pokers2);
-                } else {
-                    return "draw";
-                }
+                return comparedNumber(pokers1, pokers2, index1, index2);
+            } else if (pokersLevel1 == Hulu && pokersLevel2 == Hulu) {
+                return comparedHule(pokers1, pokers2);
             } else {
                 for (int i = 0; i < pokers1.size(); i++) {
                     int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
@@ -71,6 +67,34 @@ public class PokerUtils {
         }
 
         return buildCard(bestPokers);
+    }
+
+    private String comparedHule(List<Poker> pokers1, List<Poker> pokers2) {
+        Map<Integer, Integer> map1 = statisticsPoker(pokers1);
+        Map<Integer, Integer> map2 = statisticsPoker(pokers2);
+        int number1 = 0;
+        int number2 = 0;
+        for (Map.Entry<Integer, Integer> entry : map1.entrySet()) {
+            if (entry.getValue() == 3) {
+                number1 = entry.getKey();
+            }
+        }
+        for (Map.Entry<Integer, Integer> entry : map2.entrySet()) {
+            if (entry.getValue() == 3) {
+                number2 = entry.getKey();
+            }
+        }
+        return comparedNumber(pokers1, pokers2, number1, number2);
+    }
+
+    private String comparedNumber(List<Poker> pokers1, List<Poker> pokers2, int number1, int number2) {
+        if (number1 > number2) {
+            return buildCard(pokers1);
+        } else if (number1 < number2) {
+            return buildCard(pokers2);
+        } else {
+            return "draw";
+        }
     }
 
     private int getTypesIndex(char ch) {

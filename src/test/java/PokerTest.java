@@ -202,6 +202,19 @@ public class PokerTest {
     }
 
     @Test
+    public void should_6D_6C_6H_3C_3D_is_bigger_given_6D_6C_6H_3C_3D_And_4D_4H_4S_7D_7C() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "4D 4H 4S 7D 7C";
+        String card2 = "6D 6C 6H 3C 3D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("6D 6C 6H 3C 3D", result);
+    }
+
+    @Test
     public void should_6D_6C_6H_6S_3D_is_bigger_given_6D_6C_6H_6S_3D_And_6D_6C_6H_3C_3D() {
         PokerUtils pokerUtils = new PokerUtils();
         String card1 = "6D 6C 6H 3C 3D";
