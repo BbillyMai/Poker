@@ -9,6 +9,7 @@ public class PokerUtils {
     private final int OnePair = 2;
     private final int TwoPair = 3;
     private final int Straight = 4;
+    private final int SameType = 5;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -75,17 +76,14 @@ public class PokerUtils {
 
         Set<Integer> sets = new HashSet<>();
         int level = Single;
-        int start = pokers.get(0).getNumber();
-        int sum = 0;
-        for (int i = 1; i < pokers.size(); i++) {
-            if (start - 1 == pokers.get(i).getNumber()) {
-                sum++;
-                start = pokers.get(i).getNumber();
-            }
-        }
-        if (sum == 4) {
+
+        if (isStraight(pokers)) {
             return Straight;
         }
+        if (isSameType(pokers)) {
+            return SameType;
+        }
+
         for (Poker poker : pokers) {
             if (!sets.contains(poker.getNumber())) {
                 sets.add(poker.getNumber());
@@ -94,5 +92,30 @@ public class PokerUtils {
             }
         }
         return level;
+    }
+
+    private boolean isStraight(List<Poker> pokers) {
+
+        int start = pokers.get(0).getNumber();
+        int sum = 0;
+        for (int i = 1; i < pokers.size(); i++) {
+            if (start - 1 == pokers.get(i).getNumber()) {
+                sum++;
+                start = pokers.get(i).getNumber();
+            }
+        }
+        return sum == 4;
+    }
+
+    private boolean isSameType(List<Poker> pokers) {
+        char start = pokers.get(0).getType();
+        int sum = 0;
+        for (int i = 1; i < pokers.size(); i++) {
+            if (start == pokers.get(i).getType()) {
+                sum++;
+                start = pokers.get(i).getType();
+            }
+        }
+        return sum == 4;
     }
 }
