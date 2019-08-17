@@ -87,14 +87,14 @@ public class PokerTest {
     @Test
     public void should_5H5HTH8C9C_is_bigger_given_5H5HTH8C9C_And_4H5HTH8CAC() {
         PokerUtils pokerUtils = new PokerUtils();
-        String card1 = "4H 5H TH 8C AC";
-        String card2 = "5H 5H TH 8C 9C";
+        String card1 = "4H 5D TH 8C AC";
+        String card2 = "5H 5C TH 8C 9C";
         List<Poker> poker1 = pokerUtils.toPoker(card1);
         List<Poker> poker2 = pokerUtils.toPoker(card2);
 
         String result = pokerUtils.comparedCard(poker1, poker2);
 
-        assertEquals("TH 9C 8C 5H 5H", result);
+        assertEquals("TH 9C 8C 5H 5C", result);
     }
 
     @Test

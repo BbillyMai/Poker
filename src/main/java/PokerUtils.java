@@ -26,29 +26,24 @@ public class PokerUtils {
 
     public String comparedCard(List<Poker> pokers1, List<Poker> pokers2) {
 
-        Map<Integer, Integer> pokerIntegerMap1 = calculatePokerNum(pokers1);
-        Map<Integer, Integer> pokerIntegerMap2 = calculatePokerNum(pokers2);
+        List<PokerCard> pokerCards1 = calculatePokerNum(pokers1);
+        List<PokerCard> pokerCards2 = calculatePokerNum(pokers2);
 
-
-        int index = 0;
-        for (Map.Entry<Integer, Integer> entity1 : pokerIntegerMap1.entrySet()) {
-            index++;
-            for (Map.Entry<Integer, Integer> entity2 : pokerIntegerMap2.entrySet()) {
-                if (entity1.getValue() > entity2.getValue()) {
+        for (int i = 0; i < pokerCards1.size(); i++) {
+            int result = pokerCards1.get(i).getCount() - pokerCards2.get(i).getCount();
+            if (result > 0) {
+                return buildCard(pokers1);
+            } else if (result < 0) {
+                return buildCard(pokers2);
+            } else {
+                int result1 = pokerCards1.get(i).getNumber() - pokerCards2.get(i).getNumber();
+                if (result1 > 0) {
                     return buildCard(pokers1);
-                } else if (entity1.getValue() < entity2.getValue()) {
+                } else if (result1 < 0) {
                     return buildCard(pokers2);
-                } else {
-                    int result = pokerComparator.compare(entity1.getKey(), entity2.getKey());
-                    if (result < 0) {
-                        return buildCard(pokers1);
-                    } else if (result > 0) {
-                        return buildCard(pokers2);
-                    } else if (index == pokers1.size()) {
-                        return "draw";
-                    }
+                } else if (i == pokers1.size() - 1) {
+                    return "draw";
                 }
-                break;
             }
         }
         return null;
@@ -71,39 +66,27 @@ public class PokerUtils {
         return stringBuffer.substring(0, stringBuffer.length() - 1);
     }
 
-    private Map<Integer, Integer> calculatePokerNum(List<Poker> pokers) {
-        Map<Integer, Integer> pokerIntegerMap = new HashMap<>();
+    private List<PokerCard> calculatePokerNum(List<Poker> pokers) {
+
+        List<PokerCard> pokerCards = new ArrayList<>();
+        Set<Integer> sets = new HashSet<>();
 
         for (Poker poker : pokers) {
-            if (!pokerIntegerMap.containsKey(poker.getNumber())) {
-                pokerIntegerMap.put(poker.getNumber(), 1);
+            if (!sets.contains(poker.getNumber())) {
+                sets.add(poker.getNumber());
+                PokerCard pokerCard = new PokerCard();
+                pokerCard.setNumber(poker.getNumber());
+                pokerCard.setCount(1);
+                pokerCards.add(pokerCard);
             } else {
-                Integer value = pokerIntegerMap.get(poker.getNumber());
-                value += 1;
-                pokerIntegerMap.remove(poker.getNumber());
-                pokerIntegerMap.put(poker.getNumber(), value);
+                for (PokerCard pokerCard : pokerCards) {
+                    if (pokerCard.getNumber() == poker.getNumber()) {
+                        pokerCard.setCount(pokerCard.getCount() + 1);
+                    }
+                }
             }
         }
-
-        List<Map.Entry<Integer, Integer>> list = new ArrayList<>(pokerIntegerMap.entrySet());
-
-        list.sort((o1, o2) -> {
-            if (o2.getValue().compareTo(o1.getValue()) > 0) {
-                return 1;
-            } else if (o2.getValue().compareTo(o1.getValue()) < 0) {
-                return -1;
-            } else {
-                return o2.getKey().compareTo(o1.getKey());
-            }
-        });
-
-        Iterator<Map.Entry<Integer, Integer>> iterator = list.iterator();
-        Map.Entry<Integer, Integer> tmpEntry = null;
-        Map<Integer, Integer> sortedMap = new LinkedHashMap<>();
-        while (iterator.hasNext()) {
-            tmpEntry = iterator.next();
-            sortedMap.put(tmpEntry.getKey(), tmpEntry.getValue());
-        }
-        return sortedMap;
+        pokerCards.sort(new PokerCardComparator());
+        return pokerCards;
     }
 }
