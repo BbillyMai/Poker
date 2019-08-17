@@ -8,6 +8,7 @@ public class PokerUtils {
     private final int Single = 1;
     private final int OnePair = 2;
     private final int TwoPair = 3;
+    private final int Straight = 4;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -72,9 +73,19 @@ public class PokerUtils {
 
     private int calculatePokerLevel(List<Poker> pokers) {
 
-        int level = Single;
         Set<Integer> sets = new HashSet<>();
-
+        int level = Single;
+        int start = pokers.get(0).getNumber();
+        int sum = 0;
+        for (int i = 1; i < pokers.size(); i++) {
+            if (start - 1 == pokers.get(i).getNumber()) {
+                sum++;
+                start = pokers.get(i).getNumber();
+            }
+        }
+        if (sum == 4) {
+            return Straight;
+        }
         for (Poker poker : pokers) {
             if (!sets.contains(poker.getNumber())) {
                 sets.add(poker.getNumber());
