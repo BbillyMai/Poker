@@ -282,7 +282,60 @@ public class PokerTest {
     // TEST DRAW
 
     @Test
-    public void should_draw_is_bigger_given_2C_5C_3C_KC_TC_And_AC_4C_6C_8C_9C() {
+    public void should_draw_given_KC_And_KD() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "KC";
+        String card2 = "KD";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("draw", result);
+    }
+
+    @Test
+    public void should_draw_given_TC_TD_And_TS_TH() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "TC TD";
+        String card2 = "TS TH";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("draw", result);
+    }
+
+    @Test
+    public void should_draw_given_TC_3S_4H_8H_KC_And_TH_3C_4D_8D_KH() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "TC 3S 4H 8H KC";
+        String card2 = "TH 3C 4D 8D KH";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("draw", result);
+    }
+
+
+    @Test
+    public void should_draw_given_6C_7S_8H_9S_TC_And_6H_7D_8D_9C_TH() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "6C 7S 8H 9S TC";
+        String card2 = "6H 7D 8D 9C TH";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("draw", result);
+    }
+
+    @Test
+    public void should_draw_given_2C_5C_3C_KC_TC_And_AC_4C_6C_8C_9C() {
         PokerUtils pokerUtils = new PokerUtils();
         String card1 = "2C 5C 3C KC TC";
         String card2 = "AC 4C 6C 8C 9C";
