@@ -11,6 +11,7 @@ public class PokerUtils {
     private final int Straight = 4;
     private final int Flush = 5;
     private final int Hulu = 6;
+    private final int FourCards = 7;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -78,6 +79,10 @@ public class PokerUtils {
         Set<Integer> sets = new HashSet<>();
         int level = Single;
 
+        if (isFourCard(pokers)) {
+            return FourCards;
+        }
+
         if (isHulu(pokers)) {
             return Hulu;
         }
@@ -99,18 +104,23 @@ public class PokerUtils {
         return level;
     }
 
-    private boolean isHulu(List<Poker> pokers) {
-        Map<Integer, Integer> map = new HashMap<>();
-        for (Poker poker : pokers) {
-            if (!map.keySet().contains(poker.getNumber())) {
-                map.put(poker.getNumber(), 1);
-            } else {
-                int value = map.get(poker.getNumber());
-                value++;
-                map.remove(poker.getNumber());
-                map.put(poker.getNumber(), value);
+    private boolean isFourCard(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+
+        if (map.size() == 2) {
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == 1 || entry.getValue() == 4) {
+                    return true;
+                }
             }
         }
+        return false;
+    }
+
+
+    private boolean isHulu(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+
         if (map.size() == 2) {
             for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
                 if (entry.getValue() == 2 || entry.getValue() == 3) {
@@ -144,5 +154,20 @@ public class PokerUtils {
             }
         }
         return sum == 4;
+    }
+
+    private Map<Integer, Integer> statisticsPoker(List<Poker> pokers) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (Poker poker : pokers) {
+            if (!map.keySet().contains(poker.getNumber())) {
+                map.put(poker.getNumber(), 1);
+            } else {
+                int value = map.get(poker.getNumber());
+                value++;
+                map.remove(poker.getNumber());
+                map.put(poker.getNumber(), value);
+            }
+        }
+        return map;
     }
 }
