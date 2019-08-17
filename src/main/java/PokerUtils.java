@@ -9,7 +9,8 @@ public class PokerUtils {
     private final int OnePair = 2;
     private final int TwoPair = 3;
     private final int Straight = 4;
-    private final int SameType = 5;
+    private final int Flush = 5;
+    private final int Hulu = 6;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -77,11 +78,15 @@ public class PokerUtils {
         Set<Integer> sets = new HashSet<>();
         int level = Single;
 
+        if (isHulu(pokers)) {
+            return Hulu;
+        }
+
+        if (isFlush(pokers)) {
+            return Flush;
+        }
         if (isStraight(pokers)) {
             return Straight;
-        }
-        if (isSameType(pokers)) {
-            return SameType;
         }
 
         for (Poker poker : pokers) {
@@ -92,6 +97,28 @@ public class PokerUtils {
             }
         }
         return level;
+    }
+
+    private boolean isHulu(List<Poker> pokers) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (Poker poker : pokers) {
+            if (!map.keySet().contains(poker.getNumber())) {
+                map.put(poker.getNumber(), 1);
+            } else {
+                int value = map.get(poker.getNumber());
+                value++;
+                map.remove(poker.getNumber());
+                map.put(poker.getNumber(), value);
+            }
+        }
+        if (map.size() == 2) {
+            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+                if (entry.getValue() == 2 || entry.getValue() == 3) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean isStraight(List<Poker> pokers) {
@@ -107,7 +134,7 @@ public class PokerUtils {
         return sum == 4;
     }
 
-    private boolean isSameType(List<Poker> pokers) {
+    private boolean isFlush(List<Poker> pokers) {
         char start = pokers.get(0).getType();
         int sum = 0;
         for (int i = 1; i < pokers.size(); i++) {

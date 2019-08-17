@@ -161,4 +161,17 @@ public class PokerTest {
 
         assertEquals("KD TD 7D 5D 3D", result);
     }
+
+    @Test
+    public void should_6D_6C_6H_3C_3D_is_bigger_given_6D_6C_6H_3C_3D_And_3D_5D_TD_KD_7D() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "3D 5D TD KD 7D";
+        String card2 = "6D 6C 6H 3C 3D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("6D 6C 6H 3C 3D", result);
+    }
 }
