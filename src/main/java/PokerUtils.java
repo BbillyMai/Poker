@@ -52,6 +52,8 @@ public class PokerUtils {
                 return comparedNumber(pokers1, pokers2, index1, index2);
             } else if (pokersLevel1 == Hulu && pokersLevel2 == Hulu) {
                 return comparedHule(pokers1, pokers2);
+            } else if (pokersLevel1 == FourCards && pokersLevel2 == FourCards) {
+                return comparedFourCards(pokers1, pokers2);
             } else {
                 for (int i = 0; i < pokers1.size(); i++) {
                     int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
@@ -67,6 +69,24 @@ public class PokerUtils {
         }
 
         return buildCard(bestPokers);
+    }
+
+    private String comparedFourCards(List<Poker> pokers1, List<Poker> pokers2) {
+        Map<Integer, Integer> map1 = statisticsPoker(pokers1);
+        Map<Integer, Integer> map2 = statisticsPoker(pokers2);
+        int number1 = 0;
+        int number2 = 0;
+        for (Map.Entry<Integer, Integer> entry : map1.entrySet()) {
+            if (entry.getValue() == 4) {
+                number1 = entry.getKey();
+            }
+        }
+        for (Map.Entry<Integer, Integer> entry : map2.entrySet()) {
+            if (entry.getValue() == 4) {
+                number2 = entry.getKey();
+            }
+        }
+        return comparedNumber(pokers1, pokers2, number1, number2);
     }
 
     private String comparedHule(List<Poker> pokers1, List<Poker> pokers2) {
@@ -162,7 +182,7 @@ public class PokerUtils {
 
         if (map.size() == 2) {
             for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 1 || entry.getValue() == 4) {
+                if (entry.getValue() == 4) {
                     return true;
                 }
             }

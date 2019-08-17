@@ -228,6 +228,19 @@ public class PokerTest {
     }
 
     @Test
+    public void should_7D_7C_7H_7S_7D_is_bigger_given_6D_6C_6H_6S_AD_And_7D_7C_7H_7C_3D() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "7D 7C 7H 7C 3D";
+        String card2 = "6D 6C 6H 6S AD";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("7D 7C 7H 7C 3D", result);
+    }
+
+    @Test
     public void should_AC_KC_QC_JC_TC_is_bigger_given_6D_6C_6H_6S_3D_And_AC_KC_QC_JC_TC() {
         PokerUtils pokerUtils = new PokerUtils();
         String card1 = "AC KC QC JC TC";
