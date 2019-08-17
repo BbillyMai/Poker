@@ -5,6 +5,7 @@ import java.util.stream.IntStream;
 public class PokerUtils {
 
     private final char[] Nums = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+    private final char[] Types = {'C', 'D', 'H', 'S'};
     private final int Single = 1;
     private final int OnePair = 2;
     private final int TwoPair = 3;
@@ -43,19 +44,42 @@ public class PokerUtils {
         } else if (pokersLevel1 < pokersLevel2) {
             bestPokers = pokers2;
         } else {
-            for (int i = 0; i < pokers1.size(); i++) {
-                int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
-                if (result > 0) {
-                    return buildCard(pokers2);
-                } else if (result < 0) {
+            if (pokersLevel1 == 5 && pokersLevel2 == 5) {
+                char pokersType1 = pokers1.get(0).getType();
+                int index1 = getTypesIndex(pokersType1);
+                char pokersType2 = pokers2.get(0).getType();
+                int index2 = getTypesIndex(pokersType2);
+                if (index1 > index2) {
                     return buildCard(pokers1);
-                } else if (i == pokers1.size() - 1) {
+                } else if (index1 < index2) {
+                    return buildCard(pokers2);
+                } else {
                     return "draw";
+                }
+            } else {
+                for (int i = 0; i < pokers1.size(); i++) {
+                    int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
+                    if (result > 0) {
+                        return buildCard(pokers2);
+                    } else if (result < 0) {
+                        return buildCard(pokers1);
+                    } else if (i == pokers1.size() - 1) {
+                        return "draw";
+                    }
                 }
             }
         }
 
         return buildCard(bestPokers);
+    }
+
+    private int getTypesIndex(char ch) {
+        for (int i = 0; i < Types.length; i++) {
+            if (Types[i] == ch) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     private int getNumsIndex(char ch) {
