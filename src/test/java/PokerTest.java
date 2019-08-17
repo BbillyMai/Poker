@@ -1,4 +1,3 @@
-import jdk.nashorn.internal.scripts.JS;
 import org.junit.Test;
 
 import java.util.List;
@@ -122,6 +121,19 @@ public class PokerTest {
         String result = pokerUtils.comparedCard(poker1, poker2);
 
         assertEquals("TH 8C 8D 5D 5C", result);
+    }
+
+    @Test
+    public void should_4H_4S_TH_TC_AD_is_bigger_given_4H_4S_TH_TC_AD_And_5D_5C_TH_8C_8D() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "4H 4S TH TC AD";
+        String card2 = "5D 5C TH 8C 8D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("AD TH TC 4H 4S", result);
     }
 
     @Test
