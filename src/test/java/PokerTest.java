@@ -1,3 +1,4 @@
+import jdk.nashorn.internal.scripts.JS;
 import org.junit.Test;
 
 import java.util.List;
@@ -187,4 +188,18 @@ public class PokerTest {
 
         assertEquals("6D 6C 6H 6S 3D", result);
     }
+
+    @Test
+    public void should_AC_KC_QC_JC_TC_is_bigger_given_6D_6C_6H_6S_3D_And_AC_KC_QC_JC_TC() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "AC KC QC JC TC";
+        String card2 = "6D 6C 6H 6S 3D";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("AC KC QC JC TC", result);
+    }
+
 }

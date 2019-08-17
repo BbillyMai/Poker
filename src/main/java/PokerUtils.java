@@ -12,6 +12,7 @@ public class PokerUtils {
     private final int Flush = 5;
     private final int Hulu = 6;
     private final int FourCards = 7;
+    private final int StraightFlush = 8;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -78,6 +79,10 @@ public class PokerUtils {
 
         Set<Integer> sets = new HashSet<>();
         int level = Single;
+
+        if (isStraight(pokers) && isFlush(pokers)) {
+            return StraightFlush;
+        }
 
         if (isFourCard(pokers)) {
             return FourCards;
@@ -150,7 +155,6 @@ public class PokerUtils {
         for (int i = 1; i < pokers.size(); i++) {
             if (start == pokers.get(i).getType()) {
                 sum++;
-                start = pokers.get(i).getType();
             }
         }
         return sum == 4;
