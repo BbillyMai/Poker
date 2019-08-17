@@ -279,4 +279,18 @@ public class PokerTest {
         assertEquals("AC KC QC JC TC", result);
     }
 
+    // TEST DRAW
+
+    @Test
+    public void should_draw_is_bigger_given_2C_5C_3C_KC_TC_And_AC_4C_6C_8C_9C() {
+        PokerUtils pokerUtils = new PokerUtils();
+        String card1 = "2C 5C 3C KC TC";
+        String card2 = "AC 4C 6C 8C 9C";
+        List<Poker> poker1 = pokerUtils.toPoker(card1);
+        List<Poker> poker2 = pokerUtils.toPoker(card2);
+
+        String result = pokerUtils.comparedCard(poker1, poker2);
+
+        assertEquals("draw", result);
+    }
 }

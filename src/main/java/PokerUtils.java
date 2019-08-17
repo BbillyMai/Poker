@@ -6,15 +6,16 @@ public class PokerUtils {
 
     private final char[] Nums = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
     private final char[] Types = {'C', 'D', 'H', 'S'};
-    private final int Single = 1;
-    private final int OnePair = 2;
-    private final int TwoPair = 3;
-    private final int ThreeCards = 4;
-    private final int Straight = 5;
-    private final int Flush = 6;
-    private final int Hulu = 7;
-    private final int FourCards = 8;
-    private final int StraightFlush = 9;
+
+    private final int Single = PokerLevelEnum.HIGH_CARD.ordinal();
+    private final int OnePair = PokerLevelEnum.ONE_PAIR.ordinal();
+    private final int TwoPair = PokerLevelEnum.TWO_PAIR.ordinal();
+    private final int ThreeCards = PokerLevelEnum.THREE_KING.ordinal();
+    private final int Straight = PokerLevelEnum.STRAIGHT.ordinal();
+    private final int Flush = PokerLevelEnum.FLUSH.ordinal();
+    private final int Hulu = PokerLevelEnum.FULL_HOUSE.ordinal();
+    private final int FourCards = PokerLevelEnum.FOUR_KING.ordinal();
+    private final int StraightFlush = PokerLevelEnum.STRAIGHT_FLUSH.ordinal();
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -46,11 +47,7 @@ public class PokerUtils {
             bestPokers = pokers2;
         } else {
             if (pokersLevel1 == Flush && pokersLevel2 == Flush) {
-                char pokersType1 = pokers1.get(0).getType();
-                int index1 = getTypesIndex(pokersType1);
-                char pokersType2 = pokers2.get(0).getType();
-                int index2 = getTypesIndex(pokersType2);
-                return comparedNumber(pokers1, pokers2, index1, index2);
+                return comparedFlush(pokers1, pokers2);
             } else if (pokersLevel1 == Hulu && pokersLevel2 == Hulu) {
                 return comparedHule(pokers1, pokers2);
             } else if (pokersLevel1 == FourCards && pokersLevel2 == FourCards) {
@@ -72,6 +69,14 @@ public class PokerUtils {
         }
 
         return buildCard(bestPokers);
+    }
+
+    private String comparedFlush(List<Poker> pokers1, List<Poker> pokers2) {
+        char pokersType1 = pokers1.get(0).getType();
+        int index1 = getTypesIndex(pokersType1);
+        char pokersType2 = pokers2.get(0).getType();
+        int index2 = getTypesIndex(pokersType2);
+        return comparedNumber(pokers1, pokers2, index1, index2);
     }
 
     private String comparedFourCards(List<Poker> pokers1, List<Poker> pokers2) {
@@ -120,23 +125,6 @@ public class PokerUtils {
         }
     }
 
-    private int getTypesIndex(char ch) {
-        for (int i = 0; i < Types.length; i++) {
-            if (Types[i] == ch) {
-                return i;
-            }
-        }
-        return -1;
-    }
-
-    private int getNumsIndex(char ch) {
-        for (int i = 0; i < Nums.length; i++) {
-            if (Nums[i] == ch) {
-                return i;
-            }
-        }
-        return -1;
-    }
 
     private String buildCard(List<Poker> pokers) {
         StringBuilder stringBuffer = new StringBuilder();
@@ -149,7 +137,6 @@ public class PokerUtils {
     private int calculatePokerLevel(List<Poker> pokers) {
 
         Set<Integer> sets = new HashSet<>();
-        int level = Single;
 
         if (isStraight(pokers) && isFlush(pokers)) {
             return StraightFlush;
@@ -175,41 +162,15 @@ public class PokerUtils {
             return ThreeCards;
         }
 
-        for (Poker poker : pokers) {
-            if (!sets.contains(poker.getNumber())) {
-                sets.add(poker.getNumber());
-            } else {
-                level++;
-            }
+        if (isTwoPair(pokers)) {
+            return TwoPair;
         }
-        return level;
-    }
 
-    private boolean isFourCard(List<Poker> pokers) {
-        Map<Integer, Integer> map = statisticsPoker(pokers);
-
-        if (map.size() == 2) {
-            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 4) {
-                    return true;
-                }
-            }
+        if (isOnePair(pokers)) {
+            return OnePair;
         }
-        return false;
-    }
 
-
-    private boolean isHulu(List<Poker> pokers) {
-        Map<Integer, Integer> map = statisticsPoker(pokers);
-
-        if (map.size() == 2) {
-            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 2 || entry.getValue() == 3) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return Single;
     }
 
     private boolean isStraight(List<Poker> pokers) {
@@ -236,17 +197,29 @@ public class PokerUtils {
         return sum == 4;
     }
 
+    private boolean isFourCard(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+        return map.size() == 2 && containsValue(map, 4);
+    }
+
+    private boolean isHulu(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+        return map.size() == 2 && (containsValue(map, 2) || containsValue(map, 3));
+    }
+
     private boolean isThreeCard(List<Poker> pokers) {
         Map<Integer, Integer> map = statisticsPoker(pokers);
+        return map.size() == 3 && containsValue(map, 3);
+    }
 
-        if (map.size() == 3) {
-            for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
-                if (entry.getValue() == 3) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    private boolean isOnePair(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+        return map.size() == 4 && containsValue(map, 2);
+    }
+
+    private boolean isTwoPair(List<Poker> pokers) {
+        Map<Integer, Integer> map = statisticsPoker(pokers);
+        return map.size() == 3 && containsValue(map, 2);
     }
 
     private Map<Integer, Integer> statisticsPoker(List<Poker> pokers) {
@@ -262,5 +235,32 @@ public class PokerUtils {
             }
         }
         return map;
+    }
+
+    private int getTypesIndex(char ch) {
+        for (int i = 0; i < Types.length; i++) {
+            if (Types[i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private int getNumsIndex(char ch) {
+        for (int i = 0; i < Nums.length; i++) {
+            if (Nums[i] == ch) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private boolean containsValue(Map<Integer, Integer> map, int value) {
+        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+            if (entry.getValue() == value) {
+                return true;
+            }
+        }
+        return false;
     }
 }
