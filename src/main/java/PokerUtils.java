@@ -1,11 +1,13 @@
 
-import javax.swing.text.html.parser.Entity;
 import java.util.*;
 import java.util.stream.IntStream;
 
 public class PokerUtils {
 
-    private final char[] nums = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+    private final char[] Nums = {'2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A'};
+    private final int Single = 1;
+    private final int OnePair = 2;
+    private final int TwoPair = 3;
 
     private PokerComparator pokerComparator = new PokerComparator();
 
@@ -26,32 +28,34 @@ public class PokerUtils {
 
     public String comparedCard(List<Poker> pokers1, List<Poker> pokers2) {
 
-        List<PokerCard> pokerCards1 = calculatePokerNum(pokers1);
-        List<PokerCard> pokerCards2 = calculatePokerNum(pokers2);
+        int pokersLevel1 = calculatePokerLevel(pokers1);
+        int pokersLevel2 = calculatePokerLevel(pokers2);
 
-        for (int i = 0; i < pokerCards1.size(); i++) {
-            int result = pokerCards1.get(i).getCount() - pokerCards2.get(i).getCount();
-            if (result > 0) {
-                return buildCard(pokers1);
-            } else if (result < 0) {
-                return buildCard(pokers2);
-            } else {
-                int result1 = pokerCards1.get(i).getNumber() - pokerCards2.get(i).getNumber();
-                if (result1 > 0) {
-                    return buildCard(pokers1);
-                } else if (result1 < 0) {
+        List<Poker> bestPokers = new ArrayList<>();
+
+        if (pokersLevel1 > pokersLevel2) {
+            bestPokers = pokers1;
+        } else if (pokersLevel1 < pokersLevel2) {
+            bestPokers = pokers2;
+        } else {
+            for (int i = 0; i < pokers1.size(); i++) {
+                int result = pokerComparator.compare(pokers1.get(i), pokers2.get(i));
+                if (result > 0) {
                     return buildCard(pokers2);
+                } else if (result < 0) {
+                    return buildCard(pokers1);
                 } else if (i == pokers1.size() - 1) {
                     return "draw";
                 }
             }
         }
-        return null;
+
+        return buildCard(bestPokers);
     }
 
     private int getNumsIndex(char ch) {
-        for (int i = 0; i < nums.length; i++) {
-            if (nums[i] == ch) {
+        for (int i = 0; i < Nums.length; i++) {
+            if (Nums[i] == ch) {
                 return i;
             }
         }
@@ -66,27 +70,18 @@ public class PokerUtils {
         return stringBuffer.substring(0, stringBuffer.length() - 1);
     }
 
-    private List<PokerCard> calculatePokerNum(List<Poker> pokers) {
+    private int calculatePokerLevel(List<Poker> pokers) {
 
-        List<PokerCard> pokerCards = new ArrayList<>();
+        int level = Single;
         Set<Integer> sets = new HashSet<>();
 
         for (Poker poker : pokers) {
             if (!sets.contains(poker.getNumber())) {
                 sets.add(poker.getNumber());
-                PokerCard pokerCard = new PokerCard();
-                pokerCard.setNumber(poker.getNumber());
-                pokerCard.setCount(1);
-                pokerCards.add(pokerCard);
             } else {
-                for (PokerCard pokerCard : pokerCards) {
-                    if (pokerCard.getNumber() == poker.getNumber()) {
-                        pokerCard.setCount(pokerCard.getCount() + 1);
-                    }
-                }
+                level++;
             }
         }
-        pokerCards.sort(new PokerCardComparator());
-        return pokerCards;
+        return level;
     }
 }
